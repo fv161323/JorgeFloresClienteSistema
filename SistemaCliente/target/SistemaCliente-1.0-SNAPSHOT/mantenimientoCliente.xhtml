@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"      
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <h:head>
+        <title>Sistema Clientes</title>
+    </h:head>
+    <h:body>
+        <h:form id="formCliente">
+            <p:dataTable id="tlb" var="cliente" value="#{beanCliente.clientes}" editable="true" 
+                         selection="#{beanCliente.clienteSeleccionado}" selectionMode="single" rowKey="#{cliente.idCliente}"
+                         >
+                <f:facet name="header">
+                    Mantenimiento De Clientes
+                    <p:toolbar>
+                        <p:toolbarGroup align="right">
+
+                            <h:commandLink value="Generar CSV">
+                                <p:dataExporter type="csv" target="tlb" fileName="reporteclientes" encoding="UTF-8" />
+                            </h:commandLink>
+
+                        </p:toolbarGroup>
+                        <p:toolbarGroup align="right">
+
+                        </p:toolbarGroup>
+                    </p:toolbar>
+                </f:facet>
+
+                <p:column headerText="ID">
+                    <h:outputText value="#{cliente.idCliente}"/>
+                </p:column>
+
+                <p:column headerText="Nombre">
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{cliente.nombre}"/>
+                        </f:facet>
+                        <f:facet name="input">
+                            <h:inputText value="#{cliente.nombre}"/>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+                <p:column headerText="Apellido">
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{cliente.apellido}"/>
+                        </f:facet>
+                        <f:facet name="input">
+                            <h:inputText value="#{cliente.apellido}"/>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+                <p:column headerText="Edad">
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{cliente.edad}"/>
+                        </f:facet>
+                        <f:facet name="input">
+                            <h:inputText value="#{cliente.edad}"/>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+                <p:column headerText="DUI">
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{cliente.idDocumento.dui}"/>
+                        </f:facet>
+                        <f:facet name="input">
+                            <h:inputText value="#{cliente.idDocumento.dui}"/>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+                <p:column headerText="NIT">
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{cliente.idDocumento.nit}"/>
+                        </f:facet>
+                        <f:facet name="input">
+                            <h:inputText value="#{cliente.idDocumento.nit}"/>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+                <p:column headerText="pasaporte">
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{cliente.idDocumento.pasaporte}"/>
+                        </f:facet>
+                        <f:facet name="input">
+                            <h:inputText value="#{cliente.idDocumento.pasaporte}"/>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+                <p:column headerText="Direccion">
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{cliente.idDireccion.direccionPrincipal}"/>
+                        </f:facet>
+                        <f:facet name="input">
+                            <h:inputText value="#{cliente.idDireccion.direccionPrincipal}"/>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+                <p:column headerText="Direccion Secundaria">
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{cliente.idDireccion.direccionSecundaria}"/>
+                        </f:facet>
+                        <f:facet name="input">
+                            <h:inputText value="#{cliente.idDireccion.direccionSecundaria}"/>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+                <p:column headerText="Modificar Cliente" exportable="false">
+                   <p:rowEditor editTitle="Modificar Usuario" cancelTitle="Cancelar" saveTitle="Guardar"/>
+                </p:column>
+                <f:facet name="footer">
+                    
+                    <p:commandButton value="Agregar" actionListener="#{beanCliente.reiniciarClienteSeleccionado}"
+                                     update=":formDialog" oncomplete="PF('dialog').show()"/>
+
+
+                </f:facet>
+                <p:ajax event="rowEdit" listener="#{beanCliente.editListener}"/> 
+            </p:dataTable>
+
+            <p:contextMenu for="tlb">
+                <p:menuitem value="Eliminar" actionListener="#{beanCliente.deleteCliente}"
+                            update=":formCliente:tlb"
+                            />
+            </p:contextMenu>
+
+        </h:form>
+        <h:form id="formDialog">
+            <p:dialog id="dlCliente" widgetVar="dialog" modal="true">
+                <p:outputPanel style="text-align: center">
+                    <p:panelGrid id="display" columns="4" columnClasses="label, input">
+                        <h:outputText value="Nombre"/>
+                        <p:inputText value="#{beanCliente.clienteSeleccionado.nombre}"/>
+                        <h:outputText value="Apellido"/>
+                        <p:inputText value="#{beanCliente.clienteSeleccionado.apellido}"/>
+                        <h:outputText value="Edad"/>
+                        <p:inputText value="#{beanCliente.clienteSeleccionado.edad}"/>
+                        <h:outputText value="DUI"/>
+                        <p:inputMask mask="99999999-9" validateMask="true" value="#{beanCliente.documento.dui}"/>
+                        <h:outputText value="Pasaporte"/>
+                        <p:inputMask mask="99999999"  validateMask="true" value="#{beanCliente.documento.pasaporte}"/>
+                        <h:outputText value="NIT"/>
+                        <p:inputMask mask="9999-999999-999-9" validateMask="true" value="#{beanCliente.documento.nit}"/>
+                        <h:outputText value="Direccion Principal"/>
+                        <p:inputText value="#{beanCliente.direccion.direccionPrincipal}"/>
+                        <h:outputText value="Direccion Secundaria"/>
+                        <p:inputText value="#{beanCliente.direccion.direccionSecundaria}"/>
+
+                        <f:facet name="footer">
+                            <p:commandButton value="Agregar" actionListener="#{beanCliente.insertCliente}" 
+                                             oncomplete="PF('dialog').hide()" update=":formCliente:tlb"
+                                             /> 
+                        </f:facet>
+                    </p:panelGrid>
+                </p:outputPanel>
+            </p:dialog>
+        </h:form>
+
+          
+    </h:body>
+</html>
